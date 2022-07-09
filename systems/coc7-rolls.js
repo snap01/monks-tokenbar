@@ -159,7 +159,6 @@ export class CoC7Rolls extends BaseRolls {
             } else {
                 return { id: id, error: true, msg: i18n("MonksTokenBar.ActorNoTool") };
             }
-            console.log(item, item.id, options)
         } else if (requesttype == 'misc' && request == 'init') {
             options.characteristic = 'dex';
             options.fastForward = true
