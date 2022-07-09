@@ -64,6 +64,11 @@ export class SavingThrowApp extends Application {
                 this.requestoptions = this.requestoptions.concat(dynamic);
         }
 
+        let namedDCs = false
+        if (MonksTokenBar.system.namedDCs instanceof Function) {
+            namedDCs = MonksTokenBar.system.namedDCs()
+        }
+
         return {
             entries: this.entries,
             request: this.request,
@@ -72,7 +77,8 @@ export class SavingThrowApp extends Application {
             dc: this.dc,
             showdc: this.showdc,
             dclabel: MonksTokenBar.system.dcLabel,
-            options: this.requestoptions
+            options: this.requestoptions,
+            namedDCs: namedDCs
         };
     }
 
@@ -183,6 +189,11 @@ export class SavingThrowApp extends Application {
             let flavor = this.flavor;
             let name = this.opts?.name || MonksTokenBar.getRequestName(this.requestoptions, requesttype, request);
             
+            let namedDC = null
+            if (MonksTokenBar.system.namedDCs instanceof Function) {
+                namedDC = MonksTokenBar.system.namedDCs().filter(dc => dc.dc.toString() === this.dc?.toString()).map(dc => dc.name)
+            }
+
             let requestdata = {
                 dc: this.dc || (request == 'death' && ['dnd5e', 'sw5e'].includes(game.system.id) ? '10' : ''),
                 showdc: this.showdc,
@@ -196,6 +207,8 @@ export class SavingThrowApp extends Application {
                 options: this.opts,
                 what: 'savingthrow',
             };
+            requestdata.dcName = namedDC || requestdata.dc
+
             const html = await renderTemplate("./modules/monks-tokenbar/templates/svgthrowchatmsg.html", requestdata);
 
             delete requestdata.tokens;
@@ -796,6 +809,9 @@ Hooks.on("renderChatMessage", async (message, html, data) => {
 
                     let diceicon = "";
                     let dicetext = "";
+                    if (MonksTokenBar.system.defaultRollDiceText instanceof Function) {
+                        dicetext = MonksTokenBar.system.defaultRollDiceText(msgtoken.roll)
+                    }
                     switch (msgtoken.passed) {
                         case true: diceicon = '<i class="fas fa-check"></i>'; dicetext = i18n("MonksTokenBar.RollPassed");break;
                         case "success": diceicon = '<i class="fas fa-check-double"></i>'; dicetext = i18n("MonksTokenBar.RollCritPassed"); break;

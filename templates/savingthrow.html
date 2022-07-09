@@ -6,7 +6,17 @@
                     <div class="form-group">
                         <label>{{localize dclabel}}</label>
                         <div class="flexrow" style="padding-right:8px;">
-                            <input type="number" step="any" id="monks-tokenbar-savingdc" value="{{dc}}" style="flex: 0 0 50px;text-align:right;" />
+                            {{#if namedDCs}}
+                                <select id="monks-tokenbar-savingdc"name="monks-tokenbar-savingdc">
+                                    {{#select dc}}
+                                        {{#each namedDCs as |dcinfo|}}
+                                            <option value="{{dcinfo.dc}}">{{dcinfo.name}}</option>
+                                        {{/each}}
+                                    {{/select}}
+                                </select>
+                            {{else}}
+                                <input type="number" step="any" id="monks-tokenbar-savingdc" value="{{dc}}" style="flex: 0 0 50px;text-align:right;" />
+                            {{/if}}
                             <label style="margin-left: 16px; flex: 0 0 50px;">Show</label>
                             <input type="checkbox" id="monks-tokenbar-showdc" {{checked showdc}} />
                         </div>
