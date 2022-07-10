@@ -30,7 +30,7 @@ export class CoC7Rolls extends BaseRolls {
     }
 
     get _supportedSystem() {
-        return true;
+        return isNewerVersion(game.system.data.version, '0.7.11')
     }
 
     namedDCs() {
